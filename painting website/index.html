@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortchut icon" href="https://png.pngtree.com/element_our/20190530/ourmid/pngtree-hand-drawn-painting-brush-illustration-image_1238951.jpg">
+
+
+
+
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.6.0/remixicon.css" integrity="sha512-GL7EM8Lf8kU23I3kTio2kRWt8YRDVIQcSZjRVtVRfk05kB/QvkyafuTC94Ev0X6qk7Z0r5s06c1lsP1p/ezDYw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+		
+	<title>Paint Website</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
+
+:root{
+	/*--color-by-default: #4A98F7 ;*/
+	--color-by-default: #161A30 ;
+
+}
+
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Poppins",sans-serif;
+
+}
+
+body{
+	display: flex;
+	align-items: center;
+	margin: 0;
+	justify-content: center;
+	min-height: 100vh;
+	background: var(--color-by-default);
+}
+.container{
+	display: flex;
+	width: 100%;
+	gap: 10px;
+	height: 100vh;
+	padding: 10px;
+	/*max-width: 1050px;*/
+}
+section{
+	background: #ffffff;
+	border-radius: 7px;
+	padding: 1rem;
+}
+ul li{
+	list-style: none;
+}
+.drawing-board{
+	flex: 1;
+	padding: 0;
+}
+.tool-board{
+	width: 210px;
+	padding: 15px 22px 0;
+}
+.tool-board .row{
+	margin-bottom: 20px;
+}
+.row .options{
+	
+	margin: 10px 0 0 5px;
+}
+
+
+.row .options .option{
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+.option :where(span,label){
+	color: #5A6168;
+	padding-left: 10px;
+}
+.option #fill-color{
+	height: 14px;
+	width: 14px;
+}
+.option:is(:hover,.active) i{
+
+color: var(--color-by-default);
+}
+.option:is(:hover,.active) :where(span,label){
+	color: var(--color-by-default);
+	
+}
+#fill-color:checked ~ label{
+	color: var(--color-by-default);
+	
+
+}
+.option #size-slider{
+	width: 100%;
+	height: 2px;
+	margin-top: 10px;
+}
+.colors  .options{
+	display: flex;
+	justify-content: space-between;
+}
+.colors .option{
+	height: 20px;
+	border-radius: 50%;
+	margin-top: 3px;
+	width: 20px;
+	background: red;
+}
+
+.colors .option:first-child.selected::before{
+	/*position: absolute;
+	top: 66.4%;
+	
+	transform: translate(10%);
+
+	content: '';
+	height: 12px;
+	width: 12px;
+	background: inherit;
+	border-radius: inherit;*/
+	border-color: #ccc;
+}
+
+
+.colors .option.selected::before{
+	position: absolute;
+	top: 53.5%;
+	/*left: 16.4%;*/
+	transform: translate(33%);
+
+	content: '';
+	height: 7px;
+	width: 7px;
+	background: inherit;
+	border-radius: inherit;
+	border: 2px solid #ffff;
+}
+.colors .option:nth-child(1){
+	background-color: #fff;
+	border: 1px solid #bfbfbf;
+}
+
+.colors .option:nth-child(2){
+	background-color: #000;
+}
+
+.colors .option:nth-child(3){
+	background-color: #E02020;
+}
+
+.colors .option:nth-child(4){
+	background-color: #6DD400;
+}
+
+.colors .option:nth-child(5){
+	background-color: #4A98F7;
+}
+
+.colors .option:nth-child(6){
+	background-color: #E34221;
+}
+
+.buttons1 button{
+	width: 100%;
+	color: #fff;
+	border: none;
+	outline: none;
+	padding: 11px 0;
+	cursor: pointer;
+	/*background: none;*/
+	border-radius: 5px;
+	margin-bottom: 13px;
+}
+.buttons1 .clear-canvas{
+	color: #6C757D;
+	transition: all 0.3s ;
+}
+.buttons1 .clear-canvas:hover{
+	background-color: var(--color-by-default);
+	color: #fff;
+}
+.buttons1 .save-img{
+	background-color: var(--color-by-default);
+}
+.option #color-picker{
+	opacity: 0;
+	cursor: pointer;
+}
+.drawing-board canvas{
+	width: 100%;
+	height: 100%;
+}
+
+
+
+
+
+
+</style>
+</head>
+<body>
+
+	<div class="container">
+		<section class="tool-board">
+			<div class="row">
+				<label class="title">Shapes</label>
+				<ul class="options">
+					<li class="option tool" id="circle">
+						<i class="ri-circle-line"></i>
+						<span>Circle</span>
+					</li>
+					<li class="option tool" id="rectangle">
+						<i class="ri-rectangle-line"></i>
+						<span>Rectangle</span>
+					</li>
+					<li class="option tool" id="triangle">
+						<i class="ri-triangle-line"></i>
+						<span>Triangle</span>
+					</li>
+
+					<li class="option tool" id="line">
+						<i class="ri-align-justify"></i>
+						<span>Line</span>
+					</li>
+
+
+					<li class="option">
+						<input type="checkbox" id="fill-color">
+						<label for="fill-color">Fill Color</label>
+					</li>
+				</ul>
+			</div>
+
+
+			<div class="row">
+				<label class="title">Options</label>
+				<ul class="options">
+					<li class="option active tool" id="brush">
+						<i class="ri-brush-line"></i>
+						<span>Brush</span>
+					</li>
+					<li class="option tool" id="eraser">
+						<i class="ri-eraser-line"></i>
+						<span>Eraser</span>
+					</li>
+					
+					<li class="option">
+						<input type="range" id="size-slider" min="1" max="30" value="3">
+					</li>
+				</ul>
+			</div>
+
+
+			<div class="row colors">
+				<label class="title">Colors</label>
+				<ul class="options">
+					<li class="option"></li>
+					<li class="option selected"></li>
+					<li class="option"></li>
+					<li class="option"></li>
+					<li class="option"></li>
+					<li class="option">
+						<input type="color" id="color-picker" value="#E34221">
+					</li>
+
+				</ul>
+			</div>
+
+			<div class="row buttons1">
+				<button class="clear-canvas">Clear Canvas</button>
+				<button class="save-img">Save Image</button>
+
+			</div>
+
+
+		</section>
+		<section class="drawing-board">
+			<canvas style=" border-radius: 5px;"></canvas>
+		</section>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+
+<script defer>
+	
+const canvas = document.querySelector("canvas"),
+toolBtns = document.querySelectorAll(".tool"),
+fillColor = document.querySelector("#fill-color"),
+sizeSlider = document.querySelector("#size-slider"),
+colorBtns = document.querySelectorAll(".colors .option"),
+clearCanvas = document.querySelector(".clear-canvas"),
+saveImg = document.querySelector(".save-img"),
+
+
+
+
+colorPicker = document.querySelector("#color-picker"),
+
+
+
+
+ctx = canvas.getContext("2d");
+
+let prevMouseX, prevMouseY,snapshot,
+isDrawing = false,
+selectedTool = "brush",
+brushWidth = 3,
+selectedColor = "000";
+
+const setCanvasBackground = () =>{
+	ctx.fillStyle = `#fff`;
+	ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.fillStyle = selectedColor;
+}
+
+
+window.addEventListener("load", ()=>{
+	canvas.width = canvas.offsetWidth;
+	canvas.height = canvas.offsetHeight;
+	setCanvasBackground();
+
+})
+
+
+// rectangle
+
+
+const drawRect = (e) =>{
+	if(!fillColor.checked){
+	  return ctx.strokeRect(e.offsetX,e.offsetY,prevMouseX - e.offsetX,prevMouseY - e.offsetY);
+
+	};
+	ctx.fillRect(e.offsetX,e.offsetY, prevMouseX - e.offsetX, e.prevMouseY - e.offsetY)
+
+};
+
+
+// circle
+
+
+
+const drawCircle = (e)=>{
+	ctx.beginPath();
+	let radius = Math.sqrt(Math.pow((prevMouseX-e.offsetX),2)+ Math.pow((prevMouseY-e.offsetY),2))
+	ctx.arc(prevMouseX,prevMouseY, radius,0,2 * Math.PI);
+	fillColor.checked ? ctx.fill() : ctx.stroke();
+
+}
+
+// Triangle
+
+
+const drawTriangle = (e)=>{
+	ctx.beginPath();
+	ctx.moveTo(prevMouseX,prevMouseY);
+	ctx.lineTo(e.offsetX,e.offsetY);
+	ctx.lineTo(prevMouseX*2 - e.offsetX,e.offsetY);
+	ctx.closePath();
+	ctx.stroke();
+	fillColor.checked ? ctx.fill() : ctx.stroke();
+
+}
+
+
+
+
+// Line
+
+
+const drawLine = (e)=>{
+	ctx.beginPath();
+	ctx.moveTo(prevMouseX,prevMouseY);
+	ctx.lineTo(e.offsetX,e.offsetY);
+	ctx.stroke();
+}
+
+
+
+// mouse Drawing
+
+
+const startDrawing = (e) =>{
+	isDrawing = true;
+	prevMouseX = e.offsetX;
+	prevMouseY = e.offsetY;
+	ctx.strokeStyle = selectedColor;
+	ctx.fillStyle = selectedColor;
+
+	ctx.beginPath();
+	ctx.lineWidth = brushWidth;
+	snapshot = ctx.getImageData(0,0,canvas.width,canvas.height)
+}
+
+// main drawing
+
+
+
+
+const drawing =(e)=>{
+	if(!isDrawing) return;
+	ctx.putImageData(snapshot,0,0);
+
+	if(selectedTool === "brush" || selectedTool ==="eraser"){
+		ctx.strokeStyle = selectedTool ==="eraser" ? "#fff" : selectedColor;
+		ctx.lineTo(e.offsetX, e.offsetY);
+		ctx.stroke();	
+	}else if(selectedTool === "rectangle"){
+		drawRect(e);
+	}
+	else if(selectedTool === "circle"){
+		drawCircle(e);
+	}else if(selectedTool === "triangle"){
+		drawTriangle(e);
+	}else{
+		drawLine(e);
+	}
+	
+}
+
+
+
+toolBtns.forEach(btn =>{
+	btn.addEventListener("click", ()=>{
+		console.log(selectedTool);
+		document.querySelector(".options .active").classList.remove("active");
+		btn.classList.add("active");
+		selectedTool = btn.id;
+
+	})
+})
+
+
+colorBtns.forEach(btn =>{
+	btn.addEventListener("click", ()=>{
+	
+		
+		document.querySelector(".options .selected").classList.remove("selected");
+		btn.classList.add("selected");
+
+		selectedColor = window.getComputedStyle(btn).getPropertyValue("background-color");
+	});
+
+})
+
+
+
+
+colorPicker.addEventListener("change", ()=>{
+	colorPicker.parentElement.style.background = colorPicker.value;
+	colorPicker.parentElement.click();
+})
+
+
+saveImg.addEventListener("click", ()=>{
+	const link = document.createElement("a");
+	link.download = `${Date.now()}.jpg`;
+	link.href = canvas.toDataURL();
+	link.click();
+})
+
+clearCanvas.addEventListener("click", () =>{
+	ctx.clearRect(0,0,canvas.width,canvas.height)
+	setCanvasBackground();
+})
+sizeSlider.addEventListener("change", ()=> brushWidth = sizeSlider.value);
+canvas.addEventListener("mousedown",startDrawing);
+
+canvas.addEventListener("mousemove",drawing);
+canvas.addEventListener("mouseup",()=> isDrawing = false );
+
+
+
+</script>
+
+
+
+</body>
+</html>
